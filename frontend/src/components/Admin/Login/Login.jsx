@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import './login.css'
 import axios from '../../../axios'
 import { useNavigate } from 'react-router-dom'
@@ -54,7 +54,6 @@ function Login() {
     <div className='login_form_container'>
       <div className='left'>
         <form className='form_container' method='post' onSubmit={handleLogin}>
-          {error && <div className='error mx-auto'><span>{error}</span></div> }
           <h1>Admin Panel</h1>
           <input
             type="text"
@@ -72,10 +71,11 @@ function Login() {
             onChange={(e)=>setAdmin({...admin,[e.target.name]:e.target.value})}
 
           />
-          {/* {error && <div className={error_msg}>{error}</div>} */}
           <button type="submit" className='green_btn'>
             Log In
           </button>
+          {error && <div><span className='text-danger'>{error}</span></div> }
+
         </form>
       </div>
       <div className='right'>

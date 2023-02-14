@@ -10,33 +10,40 @@ function Signup() {
   const [name,setName]=useState()
   const [email,setEmail]=useState()
   const [pass,setPass]=useState()
+  const [image,setImage]=useState()
   const [error,setError]=useState(false)
-  useEffect(()=>{
-    const adminExist=async()=>{
-      if(cookie.jwtAd){
-        const {data}=await axios.post('/admin/dashboard',{},{withCredentials:true})
-      if(data.loggedIn){
-        navigate('/admin/login')	
-      }
-      }
-      }
-      adminExist()
-  },[navigate,cookie.jwtAd])
+
+  const handleImageChange =(e)=>{
+
+    const file=e.target.files[0]
+  
+    
+    const  allowedExtensions =/(\.jpg|\.jpeg|\.png|\.gif)$/;
+    if (!allowedExtensions.exec(file.name)) {
+      setError(true)    
+  }else{
+
+    setImage(file)
+    setError(false)    
+
+  }
+}
+
  const handleSubmit = async(e)=>{
+
       e.preventDefault()
       try{
-         
-         const {data}= await axios.post('/admin/add',{
-          userdata:{
-              name,
-              email,
-              pass
-          }
-         },
-         {
-          withCredentials:true
-         }
-         )
+  const userdata = new FormData();
+  userdata.append('image', image);
+  userdata.append('name',name)
+  userdata.append('email',email)
+  userdata.append('pass',pass)
+    const {data}= await axios.post('/admin/add',userdata,{
+    headers: {
+    'Content-Type': 'multipart/form-data'
+    }},{
+   withCredentials:true
+})
          if(data.message){
            setError(data.message)
          }else{
@@ -50,7 +57,7 @@ function Signup() {
     <div className='login_container'>
     <div className='login_form_container'>
       <div className='left'>
-        <form className='form_container' method='post' onSubmit={handleSubmit}>
+        <form className='form_container'  method='post' onSubmit={handleSubmit}>
           {error && <div className='error'><span>{error}</span></div> }
           <h1>Add User</h1>
           <input
@@ -79,9 +86,20 @@ function Signup() {
             className='input'
             onChange={(e)=>setPass(e.target.value)}
           />
-          <button type="submit" className='green_btn'>
-            Add User
-          </button>
+          <input
+            type="file"
+            placeholder=""
+            name="image"
+             required
+            className='input'
+            onChange={handleImageChange}
+
+           // onChange={(e)=>setImage(e.target.files[0])}
+          />
+
+        { !error && <button type="submit" className='green_btn'> Add User </button> }  
+        {error && <div><span className='text-danger mt-1'>Only jpg | jpeg | png are allowed </span></div>}
+
         </form>
       </div>
       <div className='right'>

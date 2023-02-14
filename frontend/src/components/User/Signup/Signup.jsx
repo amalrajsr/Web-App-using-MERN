@@ -41,7 +41,7 @@ function Signup() {
          if(data.message){
            setError(data.message)
          }else{
-          navigate("/login")
+          navigate("/login",{state:{msg:'Successfully Registered Please login'}})
          }
       }catch(err){
         console.log(err)
@@ -56,7 +56,6 @@ function Signup() {
     <div className='login_form_container'>
       <div className='left'>
         <form className='form_container' method='post' onSubmit={handleSubmit}>
-          {error && <div className='error'><span>{error}</span></div> }
           <h1>Create Your Account</h1>
           <Input type={'name'} data={name} changeData={setName} />
           <Input type={'email'} data={email} changeData={setEmail}  />
@@ -64,6 +63,8 @@ function Signup() {
           <button type="submit" className='green_btn'>
             Sign Up
           </button>
+          {error && <div ><span className='text-danger text-bold'>{error}</span></div> }
+
         </form>
       </div>
       <div className='right'>

@@ -12,7 +12,7 @@ function Input({type,data,changeData}) {
             placeholder={type}
             name={type}
             value={data}
-             required
+            required
             className='input'
             onChange={handleChange}
           />

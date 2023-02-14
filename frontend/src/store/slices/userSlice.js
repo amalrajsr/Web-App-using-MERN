@@ -9,9 +9,10 @@ const userSlice= createSlice({
         addUser(state,action){
            state.push(action.payload)
         },
-        // updateUser(state,action){
-        //     return [{...state,image:action.payload}]
-        // },
+        updateUser(state,action){
+    
+        return {...state,image:action.payload}
+        },
         removeUser(state,action){
             return []
         }

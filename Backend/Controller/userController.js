@@ -44,7 +44,8 @@ const login= async(req,res)=>{
         let status=404
         let data={
           message:'',
-          user:null
+          user:null,
+          token:null
         }
 
         const userExist= await userModel.findOne({email})
@@ -53,7 +54,9 @@ const login= async(req,res)=>{
            if(match){
                const token = jwt.createToken(userExist.password);
                 res.cookie("jwt", token, {httpOnly:false,maxAge:jwt.maxAge});
-                data.user=userExist
+                data.user={...userExist._doc,token}
+                console.log(data.user)
+                data.token=token
                 status=200
            }else{
             data.message='Wrong email or password'

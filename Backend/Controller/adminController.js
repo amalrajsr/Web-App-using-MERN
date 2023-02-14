@@ -1,6 +1,8 @@
 const userModel=require('../Model/userModel')
 const jwt= require('../Utils/jwt')
 const bcrypt = require("bcrypt");
+const fs= require('fs');
+const cloudinary= require('../Utils/cloudinary')
 
 const Login= async(req,res)=>{
     try{
@@ -42,12 +44,21 @@ const home =async(req,res)=>{
 const AddUser= async(req,res)=>{
     try{
       
-     const{name,email,pass}=req.body.userdata
+     const{name,email,pass}=req.body
+     const file= req.files.image || false
+     const result=  await cloudinary.uploader.upload(file.tempFilePath, {
+        transformation: [
+          { width: 250, height: 200, gravity: "face", crop: "fill" },
+        ]
+      },(err,result)=>{
+        console.log(err)
+    })
         const passwordHash = await bcrypt.hash(pass, 12);
         const user= new userModel({
             name,
             email,
-            password:passwordHash
+            password:passwordHash,
+            image:result.url
           })
 
           await user.save()
@@ -72,6 +83,39 @@ const AddUser= async(req,res)=>{
     }
 }
 
+const editUser= async (req,res)=>{
+
+    const {name,id}=req.body
+    let dataToUpdate={name}
+    if(req.files!==null){
+        const file=req.files.image
+        const result=  await cloudinary.uploader.upload(file.tempFilePath, {
+            transformation: [
+              { width: 250, height: 200, gravity: "face", crop: "fill" },
+            ]
+          },(err,result)=>{
+            if(err){
+                res.json({
+                    update:false
+                }).status(500)
+            }else{
+                dataToUpdate={name,image:result.url}
+            }
+            
+        })
+
+    }else{
+        console.log('no file');
+    }
+
+   
+    await userModel.updateOne({_id:id},{$set:dataToUpdate})
+    console.log('success')
+    res.json({
+        update:true
+    }).status(201)
+}
+
 const deleteUser= async(req,res)=>{
      const user=req.body.data
      await userModel.deleteOne({_id:user})
@@ -84,5 +128,6 @@ module.exports={
     Login,
     home,
     AddUser,
+    editUser,
     deleteUser
 }

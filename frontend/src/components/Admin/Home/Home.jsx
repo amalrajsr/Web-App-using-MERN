@@ -4,43 +4,44 @@ import './home.css'
 import { useNavigate, Link } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { removeAdmin } from '../../../store';
-import EditUser from '../EditUser/EditUser';
 import axios from '../../../axios'
 import { useDispatch } from 'react-redux';
 
 function Home() {
 	const navigate = useNavigate()
-	const dispatch=useDispatch()
+	const dispatch = useDispatch()
 	const [cookies, setCookie, removeCookie] = useCookies([])
 	const [userData, setUserData] = useState([]) // to store whole user's data
-	const [search, setSearch] = useState('') // to store search value
-	const [editUserData, setEditUserData] = useState('')
+	const [search, setSearch] = useState('') 
 
-	useEffect(() => {                         //using useeffect to load userData on First load
-	fetchUserData()
-	}, [])
+
+	//using useEffect to load userData on First load
+
+	useEffect(() => {    
+		fetchUserData()
+	}, [navigate])
 
 	// Fetch all userData
 	const fetchUserData = async () => {
-		
-			const { data } = await axios.get('/admin/dashboard', {}, { withCredentials: true })
-			if (data.userData) {
-				setUserData(data.userData)
-			}
-		
+
+		const { data } = await axios.get('/admin/dashboard', {}, { withCredentials: true })
+		if (data.userData) {
+			setUserData(data.userData)
+		}
+
 	}
 
-	
+
 	const deleteUser = async (id) => {
 		try {
-			const {data}=await axios.delete('/admin/deleteUser', {
+			const { data } = await axios.delete('/admin/deleteUser', {
 				data: {
 					data: id
 				}
 			}, { withCredentials: true })
-  			setUserData(userData.filter((user)=>{
-				return user.id !==id
-			})) 
+			setUserData(userData.filter((user) => {
+				return user.id !== id
+			}))
 
 			fetchUserData()
 
@@ -49,12 +50,13 @@ function Home() {
 			console.log(error)
 		}
 	}
-     // function to fetch user Details based on Search
-	const handleSearch=async ()=>{
+
+	// function to fetch user Details based on Search
+	const handleSearch = async () => {
 		const { data } = await axios.get('/admin/dashboard', {
-			params:{
-				data:search
-			}			
+			params: {
+				data: search
+			}
 		}, { withCredentials: true })
 
 		if (data.userData) {
@@ -62,11 +64,18 @@ function Home() {
 		}
 	}
 
+	//Function to edit user
+	const handleUserEdit=(user)=>{
+
+		   navigate('/admin/edit',{state:{user}})
+	}
+
 	// admin logout
 	const logout = () => {
-         
+
 		dispatch(removeAdmin())
 		removeCookie("jwtAd", { path: '/' })
+		
 		navigate('/admin/login')
 	}
 	return (
@@ -89,7 +98,7 @@ function Home() {
 						<button className='src-btn' onClick={handleSearch}>search</button>
 					</div>
 				</div>
-				<Table  bordered  size="sm" className='w-75  ms-5'>
+				<Table bordered size="sm" className='w-75  ms-5'>
 					<thead>
 						<tr>
 							<th></th>
@@ -108,7 +117,7 @@ function Home() {
 									<td>{user.name}</td>
 									<td>{user.email}</td>
 									<td className='d-flex justify-content-between'>
-										<span className='text-success' onClick={() => setEditUserData(user._id)}><i className="fas fa-edit"></i></span>
+										<span className='text-success' onClick={()=>handleUserEdit(user)}><i className="fas fa-edit"></i></span>
 										<span className='text-danger' onClick={() => deleteUser(user._id)}><i className="fas fa-trash"></i></span>
 									</td>
 								</tr>
