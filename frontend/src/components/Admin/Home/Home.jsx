@@ -3,43 +3,34 @@ import Table from 'react-bootstrap/Table';
 import './home.css'
 import { useNavigate, Link } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
+import { removeAdmin } from '../../../store';
 import EditUser from '../EditUser/EditUser';
 import axios from '../../../axios'
+import { useDispatch } from 'react-redux';
 
 function Home() {
 	const navigate = useNavigate()
+	const dispatch=useDispatch()
 	const [cookies, setCookie, removeCookie] = useCookies([])
 	const [userData, setUserData] = useState([]) // to store whole user's data
 	const [search, setSearch] = useState('') // to store search value
 	const [editUserData, setEditUserData] = useState('')
 
 	useEffect(() => {                         //using useeffect to load userData on First load
-		const verifyAdmin = async () => {
-			if (!cookies.jwtAd) {
-				navigate('/admin/login')
-			} else {
-				const { data } = await axios.get('/admin/dashboard', {
-					params: {
-						data: search
-					}
-				}, { withCredentials: true })
+	fetchUserData()
+	}, [])
 
-				if (data.userData) {
-					setUserData(data.userData)
-				}
+	// Fetch all userData
+	const fetchUserData = async () => {
+		
+			const { data } = await axios.get('/admin/dashboard', {}, { withCredentials: true })
+			if (data.userData) {
+				setUserData(data.userData)
 			}
-		}
-
-		verifyAdmin()
-	}, [cookies, navigate, search])
-
-
-	const logout = () => {
-
-		removeCookie("jwtAd", { path: '/' })
-		navigate('/admin/login')
+		
 	}
 
+	
 	const deleteUser = async (id) => {
 		try {
 			const {data}=await axios.delete('/admin/deleteUser', {
@@ -47,17 +38,37 @@ function Home() {
 					data: id
 				}
 			}, { withCredentials: true })
-  
-			console.log(data)
-			setUserData(userData.filter((user)=>{
+  			setUserData(userData.filter((user)=>{
 				return user.id !==id
 			})) 
+
+			fetchUserData()
+
 
 		} catch (error) {
 			console.log(error)
 		}
 	}
+     // function to fetch user Details based on Search
+	const handleSearch=async ()=>{
+		const { data } = await axios.get('/admin/dashboard', {
+			params:{
+				data:search
+			}			
+		}, { withCredentials: true })
 
+		if (data.userData) {
+			setUserData(data.userData)
+		}
+	}
+
+	// admin logout
+	const logout = () => {
+         
+		dispatch(removeAdmin())
+		removeCookie("jwtAd", { path: '/' })
+		navigate('/admin/login')
+	}
 	return (
 		<>
 			<div className='main_container'>
@@ -73,12 +84,16 @@ function Home() {
 				<div className='d-flex justify-content-between w-75 ms-5 heading'>
 					<div><span><h4>USER LIST</h4></span></div>
 					<div><Link to='/admin/add'><button className='add_btn'>Add</button></Link></div>
-					<div><input type="text" name="" id="" placeholder='search' onChange={(e) => setSearch(e.target.value)} /></div>
+					<div>
+						<input type="text" name="" id="" placeholder='search user' onChange={(e) => setSearch(e.target.value)} />
+						<button className='src-btn' onClick={handleSearch}>search</button>
+					</div>
 				</div>
-				<Table striped bordered hover size="sm" className='w-75  ms-5'>
+				<Table  bordered  size="sm" className='w-75  ms-5'>
 					<thead>
 						<tr>
 							<th></th>
+							<th>Profile Image</th>
 							<th>Name</th>
 							<th>Email</th>
 							<th></th>
@@ -89,6 +104,7 @@ function Home() {
 							return (
 								<tr key={user._id}>
 									<td>{i + 1}</td>
+									<td><img src={user.image} width={50} height={50} alt="profile" /></td>
 									<td>{user.name}</td>
 									<td>{user.email}</td>
 									<td className='d-flex justify-content-between'>

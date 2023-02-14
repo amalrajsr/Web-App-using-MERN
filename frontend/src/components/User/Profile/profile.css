@@ -1,0 +1,28 @@
+
+.profile{
+    height: 550px;
+    width: 80%;
+    margin-top: 50px;
+    background:linear-gradient(to left,#141e30 50%,#243b55);;
+}
+
+.profile-left{
+    margin-top: 30px;
+}
+.profile-right{
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.detail-input {
+	outline: none;
+	border: none;
+	width: 370px;
+	padding: 15px;
+	border-radius: 10px;
+	background-color: #edf5f3;
+	margin: 5px 0;
+	font-size: 14px;
+}

@@ -3,8 +3,10 @@ import './login.css'
 import axios from '../../../axios'
 import { useNavigate } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
+import { addAdmin } from '../../../store'
+import { useDispatch } from 'react-redux'
 function Login() {
-
+  const dispatch= useDispatch()
   const navigate= useNavigate()
   const [cookies]=useCookies([])
   const [error,setError]=useState(false)
@@ -13,17 +15,17 @@ function Login() {
     password:null
   })
 
-  useEffect(()=>{
-    const adminExists=async()=>{
-      if(cookies.jwtAd){
-        const {data}= await axios.post('/admin/login',{},{withCredentials:true})
-        if(data.loggedIn){
-          navigate('/admin/dashboard')
-        }
-      }
-    }
-    adminExists()
-  },[navigate,cookies.jwtAd])
+  // useEffect(()=>{
+  //   const adminExists=async()=>{
+  //     if(cookies.jwtAd){
+  //       const {data}= await axios.post('/admin/login',{},{withCredentials:true})
+  //       if(data.loggedIn){
+  //         navigate('/admin/dashboard')
+  //       }
+  //     }
+  //   }
+  //   adminExists()
+  // },[navigate,cookies.jwtAd])
 
   const handleLogin=async(e)=>{
     e.preventDefault()
@@ -34,9 +36,11 @@ function Login() {
       },{
         withCredentials:true
       })
+      console.log(data)
     if(data.message){
       setError(data.message)
     }else{
+      dispatch(addAdmin({admin:true}))
       navigate('/admin/dashboard')
     }
 

@@ -1,6 +1,8 @@
 const userModel=require('../Model/userModel')
 const bcrypt = require("bcrypt");
 const jwt= require('../Utils/jwt')
+const fs= require('fs');
+const cloudinary= require('../Utils/cloudinary')
 const register= async(req,res)=>{
     try{
      const{name,email,pass}=req.body.userdata
@@ -71,13 +73,76 @@ const login= async(req,res)=>{
 }
 
 const home =async(req,res)=>{
+
     res.json({
         loggedIn:true
     })
 }
 
+const profile= async (req,res)=>{
+
+    try{
+        let image=null,status=404
+
+        const user= await userModel.findOne({_id:req.query.data})
+        
+        if(user.image){
+
+            image=user.image
+            status=200
+        }
+        res.json({
+            image
+
+        }).status(status)
+    }catch(err){
+        console.log(err);
+    }
+
+}
+
+const imageUpload=async(req,res)=>{
+
+    try{
+        
+        console.log(req.body.id)
+
+        const _id=req.body.id
+        const file= req.files.image || false
+     
+
+        const userExist=await userModel.findOne({_id})
+
+        if(userExist && file){
+            const result=  await cloudinary.uploader.upload(file.tempFilePath, {
+                transformation: [
+                  { width: 250, height: 200, gravity: "face", crop: "fill" },
+                ]
+              },(err,result)=>{
+                console.log(err)
+            })
+            await userModel.updateOne({_id},{$set:{image:result.url}})
+              
+            res.json({
+                updated:true,
+                imageUrl:result.url
+            }).status(201)
+
+        }else{
+            res.json({
+                updated:false
+            }).status(404)
+        }
+        
+    }catch(err){
+        console.log(err)
+    }
+    
+}
 module.exports={
 register,
 login,
-home
+home,
+profile,
+imageUpload
 }

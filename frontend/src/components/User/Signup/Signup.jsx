@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react'
 import './signup.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from '../../../axios'
+import Input from '../../Input'
 import { useCookies } from 'react-cookie'
 
 function Signup() {
   const navigate=useNavigate()
   const [cookie]= useCookies([])
-  const [name,setName]=useState()
-  const [email,setEmail]=useState()
-  const [pass,setPass]=useState()
+  const [name,setName]=useState(null)
+  const [email,setEmail]=useState(null)
+  const [pass,setPass]=useState(null)
   const [error,setError]=useState(false)
   useEffect(()=>{
     const userExist=async()=>{
@@ -46,39 +47,20 @@ function Signup() {
         console.log(err)
       }
  }
-  return (
+
+
+
+
+ return (
     <div className='login_container'>
     <div className='login_form_container'>
       <div className='left'>
         <form className='form_container' method='post' onSubmit={handleSubmit}>
           {error && <div className='error'><span>{error}</span></div> }
           <h1>Create Your Account</h1>
-          <input
-            type="name"
-            placeholder="name"
-            name="name" 
-            className='input'
-            required
-            onChange={(e)=>setName(e.target.value)}
-
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            name="email" 
-            className='input'
-            required
-            onChange={(e)=>setEmail(e.target.value)}
-
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-             required
-            className='input'
-            onChange={(e)=>setPass(e.target.value)}
-          />
+          <Input type={'name'} data={name} changeData={setName} />
+          <Input type={'email'} data={email} changeData={setEmail}  />
+          <Input type={'password'} data={pass} changeData={setPass} />          
           <button type="submit" className='green_btn'>
             Sign Up
           </button>

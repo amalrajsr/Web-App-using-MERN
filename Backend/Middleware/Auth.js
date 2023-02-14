@@ -76,10 +76,9 @@ res.json({
 const isUserLogin= (req,res,next)=>{
 
     try{
-
+     
 const token= req.cookies.jwt
 if(token){
-
     jwt.verify(token,process.env.SECRET,(error,decodedToken)=>{
 
         if(error){
@@ -94,9 +93,7 @@ if(token){
     })
 }
 else{
-    res.json({
-        loggedIn:false
-       })
+    next()
     }
        
     }catch(error){

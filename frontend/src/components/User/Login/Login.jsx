@@ -3,33 +3,19 @@ import './login.css'
 import { Link, useNavigate } from 'react-router-dom'
 import axios from '../../../axios'
 import { useDispatch } from 'react-redux'
-import { loginFailure, loginSuccess } from '../../../features/userSlice'
+import { addUser } from '../../../store'
 import { useCookies } from 'react-cookie'
 
 function Login() {
   const[cookies]=useCookies([])
-  const navigate=useNavigate()
   const dispatch=useDispatch()
+  const navigate=useNavigate()
   const [error,setError]=useState(false)
   const [currentUser,setcurrentUser]=useState({
     email:null,
     password:null
   })
-  useEffect(()=>{
-   
-    userExist()
-
-  },[navigate])
-
-  const userExist=async()=>{
-    if(cookies.jwt){
-      const {data}=await axios.post('/login',{},{withCredentials:true})
-		if(data.loggedIn){
-      navigate('/')	
-		}
-    }
-    }
-
+ 
   const handleLogin=async(e)=>{
     e.preventDefault()
     try{
@@ -40,14 +26,10 @@ const {data}=await axios.post('/login',{
 }
 )
  if(data.message){
-  dispatch(loginFailure)
   setError(data.message)
  }
  if(data.user){
-  dispatch({
-    type:'user/loginSuccess',
-    payload:data.user
-  })
+  dispatch(addUser(data.user))
   navigate("/")
 
  }

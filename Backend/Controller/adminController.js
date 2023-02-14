@@ -5,18 +5,20 @@ const bcrypt = require("bcrypt");
 const Login= async(req,res)=>{
     try{
 
-        let message=''
+        let message='',admin=false
         const {name,password}=req.body.admin
             if(password===process.env.ADMIN_PASS && name===process.env.ADMIN){
                 
                 const token = jwt.createToken(process.env.ADMIN_PASS);
                 res.cookie("jwtAd", token, {httpOnly:false,maxAge:jwt.maxAge});
+                admin=true
             }else{
                 message='Wrong Credentials'
             }
           
             res.json({
-                message
+                message,
+                admin
             })
 
     }catch(error){

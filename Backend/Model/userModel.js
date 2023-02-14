@@ -15,7 +15,11 @@ const userSchema= mongoose.Schema({
         type:String,
         required:[true,"password is required"]
 
-    }
+    },
+    image:String,
+    // image: { data: Buffer, contentType: String }
+
+    
 })
 
 module.exports= mongoose.model("user",userSchema)
