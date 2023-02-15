@@ -6,84 +6,74 @@ import { useCookies } from 'react-cookie'
 import { addAdmin } from '../../../store'
 import { useDispatch } from 'react-redux'
 function Login() {
-  const dispatch= useDispatch()
-  const navigate= useNavigate()
-  const [cookies]=useCookies([])
-  const [error,setError]=useState(false)
-  const [admin,setAdmin]=useState({
-    name:null,
-    password:null
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [cookies] = useCookies([])
+  const [error, setError] = useState(false)
+  const [admin, setAdmin] = useState({
+    name: null,
+    password: null
   })
 
-  // useEffect(()=>{
-  //   const adminExists=async()=>{
-  //     if(cookies.jwtAd){
-  //       const {data}= await axios.post('/admin/login',{},{withCredentials:true})
-  //       if(data.loggedIn){
-  //         navigate('/admin/dashboard')
-  //       }
-  //     }
-  //   }
-  //   adminExists()
-  // },[navigate,cookies.jwtAd])
 
-  const handleLogin=async(e)=>{
+  const handleLogin = async (e) => {
     e.preventDefault()
-    try{
-      
-      const {data}= await axios.post('/admin/login',{
+    try {
+
+      const { data } = await axios.post('/admin/login', {
         admin
-      },{
-        withCredentials:true
+      }, {
+        withCredentials: true
       })
       console.log(data)
-    if(data.message){
-      setError(data.message)
-    }else{
-      dispatch(addAdmin({admin:true}))
-      navigate('/admin/dashboard')
-    }
+      if (data.message) {
+        setError(data.message)
+      }
+      if (data.admin) {
+        dispatch(addAdmin(data.admin))
+        navigate('/admin/dashboard')
+      }
 
-    }catch(error){
+    } catch (error) {
       console.log(error)
     }
 
-}
+  }
   return (
     <div className='login_container'>
-    <div className='login_form_container'>
-      <div className='left'>
-        <form className='form_container' method='post' onSubmit={handleLogin}>
-          <h1>Admin Panel</h1>
-          <input
-            type="text"
-            placeholder="name"
-            name="name" 
-            className='input'
-             onChange={(e)=>setAdmin({...admin,[e.target.name]:e.target.value})}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            required
-            className='input'
-            onChange={(e)=>setAdmin({...admin,[e.target.name]:e.target.value})}
+      <div className='login_form_container'>
+        <div className='left'>
+          <form className='form_container' method='post' onSubmit={handleLogin}>
+            <h1>Admin Panel</h1>
+            <input
+              type="text"
+              placeholder="name"
+              name="name"
+              className='input'
+              onChange={(e) => setAdmin({ ...admin, [e.target.name]: e.target.value })}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              required
+              className='input'
+              onChange={(e) => setAdmin({ ...admin, [e.target.name]: e.target.value })}
 
-          />
-          <button type="submit" className='green_btn'>
-            Log In
-          </button>
-          {error && <div><span className='text-danger'>{error}</span></div> }
+            />
+            <button type="submit" className='green_btn'>
+              Log In
+            </button>
+            {error && <div><span className='text-danger'>{error}</span></div>}
 
-        </form>
-      </div>
-      <div className='right'>
-        
+          </form>
+        </div>
+        <div className='right'>
+
+        </div>
       </div>
     </div>
-  </div>
-     )
+  )
 }
 
 export default Login

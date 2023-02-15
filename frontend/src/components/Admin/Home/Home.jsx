@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { useCookies } from 'react-cookie'
 import { removeAdmin } from '../../../store';
 import axios from '../../../axios'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function Home() {
 	const navigate = useNavigate()
@@ -15,8 +15,12 @@ function Home() {
 	const [search, setSearch] = useState('') 
 
 
-	//using useEffect to load userData on First load
+	const adminToken= useSelector((state)=>{
+		return state.admin
+	})
+   
 
+	//using useEffect to load userData on First load
 	useEffect(() => {    
 		fetchUserData()
 	}, [navigate])
@@ -24,7 +28,12 @@ function Home() {
 	// Fetch all userData
 	const fetchUserData = async () => {
 
-		const { data } = await axios.get('/admin/dashboard', {}, { withCredentials: true })
+		const { data } = await axios.get('/admin/dashboard',{
+
+			headers: {
+				'Authorization':`Bearer ${adminToken[0]}`,
+			  }
+		},{} ,{ withCredentials: true })
 		if (data.userData) {
 			setUserData(data.userData)
 		}
@@ -33,12 +42,19 @@ function Home() {
 
 
 	const deleteUser = async (id) => {
+		
 		try {
-			const { data } = await axios.delete('/admin/deleteUser', {
+			console.log(id +'lkdfjglk')
+			const { data } = await axios.delete('/admin/deleteUser',{
+				headers: {
+					'Authorization':`Bearer ${adminToken[0]}`,
+				  }
+			},{
 				data: {
 					data: id
 				}
-			}, { withCredentials: true })
+			},{withCredentials:true})
+
 			setUserData(userData.filter((user) => {
 				return user.id !== id
 			}))
@@ -53,7 +69,12 @@ function Home() {
 
 	// function to fetch user Details based on Search
 	const handleSearch = async () => {
-		const { data } = await axios.get('/admin/dashboard', {
+		const { data } = await axios.get('/admin/dashboard',{
+
+			headers: {
+				'Authorization':`Bearer ${adminToken[0]}`,
+			  }
+		}, {
 			params: {
 				data: search
 			}
@@ -75,7 +96,6 @@ function Home() {
 
 		dispatch(removeAdmin())
 		removeCookie("jwtAd", { path: '/' })
-		
 		navigate('/admin/login')
 	}
 	return (

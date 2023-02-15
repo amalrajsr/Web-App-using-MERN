@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import axios from '../../../axios'
@@ -9,22 +10,25 @@ function EditUser() {
   const {_id,name,email}=location.state.user
   const [error,setError]=useState(false)
   const [editUser,setEditUser]= useState({
-    id:_id,
     name,
     image:null
   })
+console.log(editUser.name)
+  // fetching admin token from redux
+  const adminToken= useSelector((state)=>{
+		return state.admin
+	})
+   
 
   const handleImageChange =(e)=>{
 
-    const file=e.target.files[0]
-  
-    
+    const file=e.target.files[0]  
     const  allowedExtensions =/(\.jpg|\.jpeg|\.png|\.gif)$/;
     if (!allowedExtensions.exec(file.name)) {
       setError(true)    
   }else{
 
-    setEditUser({...EditUser,image:file})
+    setEditUser({...editUser,image:file})
     setError(false)    
 
   }
@@ -33,12 +37,14 @@ function EditUser() {
   const handleSubmit= async(e)=>{
     try{
       e.preventDefault()
+      console.log(' user id '+editUser.id)
       const userdata = new FormData();
       userdata.append('image', editUser.image);
       userdata.append('name',editUser.name)
-      userdata.append('id',editUser.id)
+      userdata.append('id',_id)
         const {data}= await axios.put('/admin/edit',userdata,{
         headers: {
+          'Authorization':`Bearer ${adminToken[0]}`,
         'Content-Type': 'multipart/form-data'
         }},{
        withCredentials:true

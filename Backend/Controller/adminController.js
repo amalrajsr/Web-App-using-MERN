@@ -13,7 +13,7 @@ const Login= async(req,res)=>{
                 
                 const token = jwt.createToken(process.env.ADMIN_PASS);
                 res.cookie("jwtAd", token, {httpOnly:false,maxAge:jwt.maxAge});
-                admin=true
+                admin=token
             }else{
                 message='Wrong Credentials'
             }
@@ -28,7 +28,7 @@ const Login= async(req,res)=>{
     }
 }
 const home =async(req,res)=>{
-
+try{
     const search=req.query.data || ''
     const userData=await userModel.find({
         $or: [
@@ -39,6 +39,11 @@ const home =async(req,res)=>{
         loggedIn:true,
         userData
     })
+
+}catch(err){
+    console.log(err);
+}
+    
 }
 
 const AddUser= async(req,res)=>{
@@ -85,44 +90,59 @@ const AddUser= async(req,res)=>{
 
 const editUser= async (req,res)=>{
 
-    const {name,id}=req.body
-    let dataToUpdate={name}
-    if(req.files!==null){
-        const file=req.files.image
-        const result=  await cloudinary.uploader.upload(file.tempFilePath, {
-            transformation: [
-              { width: 250, height: 200, gravity: "face", crop: "fill" },
-            ]
-          },(err,result)=>{
-            if(err){
-                res.json({
-                    update:false
-                }).status(500)
-            }else{
-                dataToUpdate={name,image:result.url}
-            }
-            
-        })
+    try{
+        const {name,id}=req.body
+        let dataToUpdate={name}
+        if(req.files!==null){
+            const file=req.files.image
+            const result=  await cloudinary.uploader.upload(file.tempFilePath, {
+                transformation: [
+                  { width: 250, height: 200, gravity: "face", crop: "fill" },
+                ]
+              },(err,result)=>{
+                if(err){
+                    res.json({
+                        update:false
+                    }).status(500)
+                }else{
+                    dataToUpdate={name,image:result.url}
+                }
+                
+            })
+    
+        }else{
+            console.log('no file');
+        }
+    
+       
+        await userModel.updateOne({_id:id},{$set:dataToUpdate})
+        console.log('success')
+        res.json({
+            update:true
+        }).status(201)
 
-    }else{
-        console.log('no file');
+    }catch(err){
+        console.log(err)
     }
 
    
-    await userModel.updateOne({_id:id},{$set:dataToUpdate})
-    console.log('success')
-    res.json({
-        update:true
-    }).status(201)
 }
 
 const deleteUser= async(req,res)=>{
-     const user=req.body.data
-     await userModel.deleteOne({_id:user})
-     console.log('user deleted');
-     res.json({
-        delete:true
-     }).status(200)
+
+    try{
+        console.log(req.query)
+        console.log(req.params);
+        const user=req.body.data
+        await userModel.deleteOne({_id:user})
+        console.log('user deleted');
+        res.json({
+           delete:true
+        }).status(201)
+    }catch(err){
+        console.log(err)
+    }
+     
     }
 module.exports={
     Login,

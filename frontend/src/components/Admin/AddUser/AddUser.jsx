@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import './adduser.css'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useResolvedPath } from 'react-router-dom'
 import axios from '../../../axios'
 import { useCookies } from 'react-cookie'
+import { useSelector } from 'react-redux'
 
 function Signup() {
   const navigate=useNavigate()
@@ -13,6 +14,9 @@ function Signup() {
   const [image,setImage]=useState()
   const [error,setError]=useState(false)
 
+  const adminToken=useSelector((state)=>{
+    return state.admin
+  })
   const handleImageChange =(e)=>{
 
     const file=e.target.files[0]
@@ -40,6 +44,7 @@ function Signup() {
   userdata.append('pass',pass)
     const {data}= await axios.post('/admin/add',userdata,{
     headers: {
+      'Authorization':`Bearer ${adminToken[0]}`,
     'Content-Type': 'multipart/form-data'
     }},{
    withCredentials:true

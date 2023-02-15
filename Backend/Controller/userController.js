@@ -55,7 +55,6 @@ const login= async(req,res)=>{
                const token = jwt.createToken(userExist.password);
                 res.cookie("jwt", token, {httpOnly:false,maxAge:jwt.maxAge});
                 data.user={...userExist._doc,token}
-                console.log(data.user)
                 data.token=token
                 status=200
            }else{
@@ -77,6 +76,8 @@ const login= async(req,res)=>{
 
 const home =async(req,res)=>{
 
+
+
     res.json({
         loggedIn:true
     })
@@ -85,6 +86,7 @@ const home =async(req,res)=>{
 const profile= async (req,res)=>{
 
     try{
+
         let image=null,status=404
 
         const user= await userModel.findOne({_id:req.query.data})
@@ -92,7 +94,7 @@ const profile= async (req,res)=>{
         if(user.image){
 
             image=user.image
-            status=200
+            status=201
         }
         res.json({
             image
@@ -108,7 +110,6 @@ const imageUpload=async(req,res)=>{
 
     try{
         
-        console.log(req.body.id)
 
         const _id=req.body.id
         const file= req.files.image || false

@@ -25,7 +25,7 @@ function Profile() {
   const email = userData[0].email || ''
   const userId = userData[0]._id || ''
   const userImage = userData[0].image || ''
-
+  const token= userData[0].token || ' '
 const handleImageChange =(e)=>{
 
   const file=e.target.files[0]
@@ -49,7 +49,9 @@ const handleImageChange =(e)=>{
       userdata.append('id', userId)
       const { data } = await axios.post('/image_upload', userdata, {
         headers: {
+          'Authorization':`Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
+
         }
       }, {
         withCredentials: true

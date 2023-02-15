@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {removeUser  } from '../../../store/slices/userSlice'
-
 import './navbar.css'
 function UserNavbar() {
+
   const navigate=useNavigate()
 	const[cookies,setCookie,removeCookie]=useCookies([])
   const dispatch=useDispatch()
@@ -17,6 +17,7 @@ function UserNavbar() {
     return state.user
   })
 
+  
   const userName= userData.length>0?userData[0].name:''
 
 
