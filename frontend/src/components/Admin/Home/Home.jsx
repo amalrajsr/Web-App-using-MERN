@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Table from 'react-bootstrap/Table';
 import './home.css'
 import { useNavigate, Link } from 'react-router-dom'
-import { useCookies } from 'react-cookie'
 import { removeAdmin } from '../../../store';
 import axios from '../../../axios'
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 function Home() {
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
-	const [cookies, setCookie, removeCookie] = useCookies([])
 	const [userData, setUserData] = useState([]) // to store whole user's data
 	const [search, setSearch] = useState('') 
 
@@ -29,11 +27,10 @@ function Home() {
 	const fetchUserData = async () => {
 
 		const { data } = await axios.get('/admin/dashboard',{
-
 			headers: {
 				'Authorization':`Bearer ${adminToken[0]}`,
 			  }
-		},{} ,{ withCredentials: true })
+		} ,{ withCredentials: true })
 		if (data.userData) {
 			setUserData(data.userData)
 		}
@@ -46,13 +43,12 @@ function Home() {
 		try {
 			console.log(id +'lkdfjglk')
 			const { data } = await axios.delete('/admin/deleteUser',{
+				
 				headers: {
 					'Authorization':`Bearer ${adminToken[0]}`,
-				  }
-			},{
-				data: {
-					data: id
-				}
+				  },
+				  data:{id}
+				
 			},{withCredentials:true})
 
 			setUserData(userData.filter((user) => {
@@ -67,17 +63,15 @@ function Home() {
 		}
 	}
 
-	// function to fetch user Details based on Search
+	
 	const handleSearch = async () => {
 		const { data } = await axios.get('/admin/dashboard',{
 
 			headers: {
 				'Authorization':`Bearer ${adminToken[0]}`,
-			  }
-		}, {
-			params: {
-				data: search
-			}
+			  },
+			  params:{search}
+
 		}, { withCredentials: true })
 
 		if (data.userData) {
@@ -95,7 +89,6 @@ function Home() {
 	const logout = () => {
 
 		dispatch(removeAdmin())
-		removeCookie("jwtAd", { path: '/' })
 		navigate('/admin/login')
 	}
 	return (

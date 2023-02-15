@@ -17,13 +17,18 @@ const admin=useSelector((state)=>{
   return state.admin
 })
 
+
   return (
     <BrowserRouter>
     <Routes>
-      <Route path='/login' element={user.length<1?<Login/>:<Navigate to='/' />}/>
-      <Route path='/signup' element={ user.length<1?<Signup/>:<Navigate to='/' />}/>
-      <Route path='/'  element={user.length>0? <Home/>:<Navigate to='/login'/>}/>
-      <Route path='/profile' element={user.length>0?<Profile/>:<Navigate to='/login'/> } />
+     
+
+       <Route path='/login' element={!user.value?<Login/>:<Navigate to='/' />}/>
+      <Route path='/signup' element={! user.value?<Signup/>:<Navigate to='/' />}/>
+      <Route path='/'  element={user.value? <Home/>:<Navigate to='/login'/>}/>
+      {/* <Route path='/'  element={ <Home/>}/> */}
+
+      <Route path='/profile' element={user.value?<Profile/>:<Navigate to='/login'/> } />
       <Route path='/admin/login' element={ admin.length>0?<Navigate to='/admin/dashboard'/>:<AdminLogin/>}/>
       <Route path='/admin/dashboard' element={admin.length>0?<AdminHome/>:<Navigate to='/admin/login' />}/>
       <Route path='/admin/add' element={admin.length>0?<AddUser/>:<Navigate to='/admin/login' />}/>

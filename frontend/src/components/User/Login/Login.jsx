@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import './login.css'
-import { json, Link, useLocation, useNavigate } from 'react-router-dom'
+import {  Link, useLocation, useNavigate } from 'react-router-dom'
 import axios from '../../../axios'
 import { useDispatch } from 'react-redux'
 import { addUser } from '../../../store'
-import { useCookies } from 'react-cookie'
 
 function Login() {
   const location = useLocation()
   const message = location.state !== null ? location.state.msg : ''
-  const [cookies] = useCookies([])
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [error, setError] = useState(false)
@@ -31,7 +29,6 @@ function Login() {
         setError(data.message)
       }
       if (data.user && data.token) {
-        console.log(data.user)
         // localStorage.setItem('user',JSON.stringify({email:data.user.email,token:data.token}) )
         dispatch(addUser(data.user))
         
@@ -49,7 +46,7 @@ function Login() {
         <div className='left'>
           <form className='form_container' method='post' onSubmit={handleLogin}>
             <h1>Login to Your Account</h1>
-            <span className='text-success'>{message}</span>
+            <span className='text-success'>{!error && message}</span>
             <input
               type="email"
               placeholder="Email"

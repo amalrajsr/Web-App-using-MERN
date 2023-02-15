@@ -2,7 +2,6 @@
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
-import { useCookies } from 'react-cookie';
 import { useSelector } from 'react-redux'
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -11,20 +10,17 @@ import './navbar.css'
 function UserNavbar() {
 
   const navigate=useNavigate()
-	const[cookies,setCookie,removeCookie]=useCookies([])
   const dispatch=useDispatch()
   const userData= useSelector((state)=>{
     return state.user
   })
 
-  
-  const userName= userData.length>0?userData[0].name:''
+  const userName= userData.value?userData.value.name:''
 
 
 
   const  handleLogout=()=>{
      dispatch(removeUser(userData))
-      removeCookie("jwt")
       navigate('/login')    
   }
 

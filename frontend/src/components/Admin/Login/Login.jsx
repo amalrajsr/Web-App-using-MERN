@@ -2,13 +2,11 @@ import React, { useState } from 'react'
 import './login.css'
 import axios from '../../../axios'
 import { useNavigate } from 'react-router-dom'
-import { useCookies } from 'react-cookie'
 import { addAdmin } from '../../../store'
 import { useDispatch } from 'react-redux'
 function Login() {
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [cookies] = useCookies([])
   const [error, setError] = useState(false)
   const [admin, setAdmin] = useState({
     name: null,

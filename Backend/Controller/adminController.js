@@ -7,6 +7,7 @@ const cloudinary= require('../Utils/cloudinary')
 const Login= async(req,res)=>{
     try{
 
+        console.log('admin')
         let message='',admin=false
         const {name,password}=req.body.admin
             if(password===process.env.ADMIN_PASS && name===process.env.ADMIN){
@@ -28,13 +29,18 @@ const Login= async(req,res)=>{
     }
 }
 const home =async(req,res)=>{
+
 try{
-    const search=req.query.data || ''
+
+    // console.log(req.query)
+    // console.log(req.body)
+    const search=req.query.search || ''
     const userData=await userModel.find({
         $or: [
             { name: { $regex: '^' + search + '.*' ,$options:'i'} },
              ]
     })
+
     res.json({
         loggedIn:true,
         userData
@@ -131,9 +137,8 @@ const editUser= async (req,res)=>{
 const deleteUser= async(req,res)=>{
 
     try{
-        console.log(req.query)
-        console.log(req.params);
-        const user=req.body.data
+       
+        const user=req.body.id
         await userModel.deleteOne({_id:user})
         console.log('user deleted');
         res.json({

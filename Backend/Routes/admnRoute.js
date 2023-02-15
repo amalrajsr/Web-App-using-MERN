@@ -1,12 +1,9 @@
 const express=require('express') 
 const admin_router=express()
 const AdminController =require('../Controller/adminController')
-const Auth= require('../Middleware/Auth')
 const jwtAuth=require('../Middleware/jwtAuth')
 
-// admin_router.get('/dashboard',Auth.isLogin,AdminController.home)
 admin_router.get('/dashboard',jwtAuth.requireAuth,AdminController.home)
-
 admin_router.post('/login', AdminController.Login)
 admin_router.post('/add',jwtAuth.requireAuth,AdminController.AddUser)
 admin_router.put('/edit',jwtAuth.requireAuth,AdminController.editUser)

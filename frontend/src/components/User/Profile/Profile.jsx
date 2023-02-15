@@ -7,30 +7,29 @@ import axios from '../../../axios'
 import './profile.css'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateUser } from '../../../store';
-import { useCookies } from 'react-cookie';
 import defaultImage from '../../../assets/profile.jpg'
 function Profile() {
 
-  const [cookies, setCookie, removeCookie] = useCookies([])
   const [showModal, setshowModal] = useState(false)
   const [image, setImage] = useState('')
   const [imageError,setImageError]= useState(false)
   const [preview, setPreview] = useState('')
+
   const dispatch = useDispatch()
+  
   const userData = useSelector((state) => {
     return state.user
   })
 
-  const username = userData[0].name || ''
-  const email = userData[0].email || ''
-  const userId = userData[0]._id || ''
-  const userImage = userData[0].image || ''
-  const token= userData[0].token || ' '
-const handleImageChange =(e)=>{
+  const username = userData.value.name || ''
+  const email = userData.value.email || ''
+  const userId = userData.value._id || ''
+  const userImage = userData.value.image || ''
+  const token= userData.value.token || ' '
 
+  const handleImageChange =(e)=>{
   const file=e.target.files[0]
 
-  
   const  allowedExtensions =/(\.jpg|\.jpeg|\.png|\.gif)$/;
   if (!allowedExtensions.exec(file.name)) {
     setImageError(true)    
@@ -57,7 +56,7 @@ const handleImageChange =(e)=>{
         withCredentials: true
       })
       if (data.imageUrl) {
-        // dispatch(updateUser(data.imageUrl))
+         dispatch(updateUser(data.imageUrl))
         setImage(data.imageUrl)
 
       }
@@ -85,7 +84,7 @@ const handleImageChange =(e)=>{
         <div className='profile-left col-4 ms-2'>
           <h2 className='mb-4 text-white'>PROFILE</h2>
           <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" width={250} height={200} alt='profile' src={image || userImage || defaultImage} onClick={handleShow} />
+            <Card.Img variant="top" width={250} height={200} alt='profile' src={ userImage || defaultImage} onClick={handleShow} />
             {/* { } */}
             <Card.Body>
               <Card.Title></Card.Title>
@@ -100,7 +99,6 @@ const handleImageChange =(e)=>{
             </Modal.Header>
             <Modal.Body>
               <input type='file' accept='.jpeg,.png,.jpg,.webp' name='image' onChange={handleImageChange} />
-              {/* (e)=>setPreview(e.target.files[0]) */}
               <img className='mb-2' width="100px" height="80px"  src={preview ? URL.createObjectURL(preview) : ''} />
               {imageError && <div><span className='text-danger mt-1'>Only jpg | jpeg | png are allowed </span></div>}
             </Modal.Body>

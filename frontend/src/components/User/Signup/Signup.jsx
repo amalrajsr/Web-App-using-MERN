@@ -12,17 +12,17 @@ function Signup() {
   const [email,setEmail]=useState(null)
   const [pass,setPass]=useState(null)
   const [error,setError]=useState(false)
-  useEffect(()=>{
-    const userExist=async()=>{
-      if(cookie.jwt){
-        const {data}=await axios.post('/register',{},{withCredentials:true})
-      if(data.loggedIn){
-        navigate('/')	
-      }
-      }
-      }
-      userExist()
-  },[navigate,cookie.jwt])
+  // useEffect(()=>{
+  //   const userExist=async()=>{
+  //     if(cookie.jwt){
+  //       const {data}=await axios.post('/register',{},{withCredentials:true})
+  //     if(data.loggedIn){
+  //       navigate('/')	
+  //     }
+  //     }
+  //     }
+  //     userExist()
+  // },[navigate,cookie.jwt])
  const handleSubmit = async(e)=>{
       e.preventDefault()
       try{

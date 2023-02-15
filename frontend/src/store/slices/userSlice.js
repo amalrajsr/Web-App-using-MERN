@@ -4,17 +4,17 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const userSlice= createSlice({
     name:'user',
-    initialState:[],
+    initialState:{},
     reducers:{
         addUser(state,action){
-           state.push(action.payload)
+           state.value=action.payload
         },
         updateUser(state,action){
     
         return {...state,image:action.payload}
         },
         removeUser(state,action){
-            return []
+            return {}
         }
     }
 })

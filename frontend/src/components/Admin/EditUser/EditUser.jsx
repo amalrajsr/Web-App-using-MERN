@@ -13,7 +13,7 @@ function EditUser() {
     name,
     image:null
   })
-console.log(editUser.name)
+
   // fetching admin token from redux
   const adminToken= useSelector((state)=>{
 		return state.admin
