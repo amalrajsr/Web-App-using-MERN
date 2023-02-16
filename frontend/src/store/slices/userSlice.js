@@ -13,7 +13,7 @@ const userSlice= createSlice({
     
         return {...state,image:action.payload}
         },
-        removeUser(state,action){
+        removeUser(state){
             return {}
         }
     }

@@ -13,7 +13,6 @@ const Login= async(req,res)=>{
             if(password===process.env.ADMIN_PASS && name===process.env.ADMIN){
                 
                 const token = jwt.createToken(process.env.ADMIN_PASS);
-                res.cookie("jwtAd", token, {httpOnly:false,maxAge:jwt.maxAge});
                 admin=token
             }else{
                 message='Wrong Credentials'

@@ -26,8 +26,6 @@ const admin=useSelector((state)=>{
        <Route path='/login' element={!user.value?<Login/>:<Navigate to='/' />}/>
       <Route path='/signup' element={! user.value?<Signup/>:<Navigate to='/' />}/>
       <Route path='/'  element={user.value? <Home/>:<Navigate to='/login'/>}/>
-      {/* <Route path='/'  element={ <Home/>}/> */}
-
       <Route path='/profile' element={user.value?<Profile/>:<Navigate to='/login'/> } />
       <Route path='/admin/login' element={ admin.length>0?<Navigate to='/admin/dashboard'/>:<AdminLogin/>}/>
       <Route path='/admin/dashboard' element={admin.length>0?<AdminHome/>:<Navigate to='/admin/login' />}/>

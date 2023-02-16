@@ -84,7 +84,7 @@ function Profile() {
         <div className='profile-left col-4 ms-2'>
           <h2 className='mb-4 text-white'>PROFILE</h2>
           <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" width={250} height={200} alt='profile' src={ userImage || defaultImage} onClick={handleShow} />
+            <Card.Img variant="top" width={250} height={200} alt='profile' src={image|| userImage || defaultImage} onClick={handleShow} />
             {/* { } */}
             <Card.Body>
               <Card.Title></Card.Title>

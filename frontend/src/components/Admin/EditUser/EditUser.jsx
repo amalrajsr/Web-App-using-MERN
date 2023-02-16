@@ -7,7 +7,7 @@ import axios from '../../../axios'
 function EditUser() {
   const navigate=useNavigate()
   const location=useLocation()
-  const {_id,name,email}=location.state.user
+  const {_id,name,email,image}=location.state.user
   const [error,setError]=useState(false)
   const [editUser,setEditUser]= useState({
     name,
@@ -37,7 +37,6 @@ function EditUser() {
   const handleSubmit= async(e)=>{
     try{
       e.preventDefault()
-      console.log(' user id '+editUser.id)
       const userdata = new FormData();
       userdata.append('image', editUser.image);
       userdata.append('name',editUser.name)
@@ -96,10 +95,9 @@ function EditUser() {
             className='input'
             onChange={handleImageChange}
           />
-
+         <span> <img src={image} alt="user" width={50} height={50}/></span>
          { !error && <button type="submit" className='green_btn'> Edit User</button>}
           {error && <div><span className='text-danger mt-1'>Only jpg | jpeg | png are allowed </span></div>}
-
         </form>
       </div>
       <div className='right'>

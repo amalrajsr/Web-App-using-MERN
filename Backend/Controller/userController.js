@@ -53,7 +53,6 @@ const login= async(req,res)=>{
           const match = await bcrypt.compare(password, userExist.password);
            if(match){
                const token = jwt.createToken(userExist.password);
-                res.cookie("jwt", token, {httpOnly:false,maxAge:jwt.maxAge});
                 data.user={...userExist._doc,token}
                 data.token=token
                 status=200
