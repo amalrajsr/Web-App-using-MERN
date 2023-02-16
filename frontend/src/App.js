@@ -1,14 +1,25 @@
-import Login from './components/User/Login/Login';
-import Signup from './components/User/Signup/Signup';
-import {Navigate, BrowserRouter,Route,Routes} from 'react-router-dom'
+// import Login from './components/User/Login/Login';
+// import Signup from './components/User/Signup/Signup';
+// import AdminLogin from './components/Admin/Login/Login'
+// import AddUser from './components/Admin/AddUser/AddUser'
+// import EditUser from './components/Admin/EditUser/EditUser';
 import Home from './components/User/Home/Home';
-import AdminLogin from './components/Admin/Login/Login'
 import AdminHome from './components/Admin/Home/Home'
-import AddUser from './components/Admin/AddUser/AddUser'
 import Profile from './components/User/Profile/Profile';
-import EditUser from './components/Admin/EditUser/EditUser';
+import { lazy } from 'react';
 import { useSelector } from 'react-redux';
+import {Navigate, BrowserRouter,Route,Routes} from 'react-router-dom'
 
+// lazy loading 
+const Login =lazy(()=>import('./components/User/Login/Login')) 
+const Signup =lazy(()=>import('./components/User/Signup/Signup.jsx')) ;
+const AdminLogin= lazy(()=>import('./components/Admin/Login/Login.jsx'))
+const AddUser =lazy(()=>import('./components/Admin/AddUser/AddUser.jsx'))
+const EditUser =lazy(()=>import('./components/Admin/EditUser/EditUser.jsx'))
+
+
+
+// Checking user exists in redux or not
 function App() {
 const user= useSelector((state)=>{
   return state.user

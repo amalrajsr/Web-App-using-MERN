@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import axios from '../../../axios'
+import './edituser.css'
 
 function EditUser() {
   const navigate=useNavigate()
